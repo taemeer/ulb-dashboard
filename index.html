@@ -121,6 +121,10 @@ function comparePartyWise() {
 
     const div=document.getElementById('compareResults');
     const filtered=originalData.filter(r=>parseInt(r[party])>0);
+    // Calculate total seats won by selected party
+const totalSeats = originalData.reduce((sum, row) => {
+    return sum + (parseInt(row[party]) || 0);
+}, 0);
 
     const allParties=['BJP','CPM','INC','AIMIM','BRS','BSP','Other Registered Parties with TSEC','Independents'];
     const remaining=allParties.filter(p=>p!==party);
@@ -136,6 +140,18 @@ function comparePartyWise() {
     remaining.forEach(p=>html+=`<th>${p}</th>`);
 
     html+='</tr></thead><tbody>';
+
+// Total row (just after header)
+html+=`
+<tr style="background:#f9f9f9; font-weight:bold;">
+<td colspan="2" style="text-align:left; padding-left:10px;">
+${party} : Total Seats Won
+</td>
+<td colspan="${remaining.length + 3}" style="text-align:left;">
+${totalSeats}
+</td>
+</tr>
+`;
 
     filtered.forEach((row,index)=>{
         html+='<tr>';
@@ -159,3 +175,4 @@ function comparePartyWise() {
 </body>
 
 </html>
+
