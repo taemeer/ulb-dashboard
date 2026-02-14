@@ -15,6 +15,25 @@ th {background:#2c3e50;color:white}
 .section {display:none;margin-top:30px}
 .section.active {display:block}
 .filter-section {margin-bottom:30px;text-align:center;padding:15px;background:#ecf0f1}
+/* Sticky header */
+thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+/* Sticky total row */
+.total-row td {
+  position: sticky;
+  top: 35px;
+  background: #fff8dc;
+  font-weight: bold;
+  z-index: 1;
+}
+
+/* Highlight selected party column */
+.highlight-col {
+  background-color: #DCDEFA !important;
+}
 </style>
 </head>
 <body>
@@ -125,7 +144,24 @@ function comparePartyWise() {
 const totalSeats = originalData.reduce((sum, row) => {
     return sum + (parseInt(row[party]) || 0);
 }, 0);
+// Calculate grand total of all parties seats
+const grandTotal = originalData.reduce((sum, row) => {
+    return sum + (
+        parseInt(row['BJP']||0) +
+        parseInt(row['CPM']||0) +
+        parseInt(row['INC']||0) +
+        parseInt(row['AIMIM']||0) +
+        parseInt(row['BRS']||0) +
+        parseInt(row['BSP']||0) +
+        parseInt(row['Other Registered Parties with TSEC']||0) +
+        parseInt(row['Independents']||0)
+    );
+}, 0);
 
+const percentage = grandTotal > 0
+    ? ((totalSeats / grandTotal) * 100).toFixed(2)
+    : 0;
+    
     const allParties=['BJP','CPM','INC','AIMIM','BRS','BSP','Other Registered Parties with TSEC','Independents'];
     const remaining=allParties.filter(p=>p!==party);
 
@@ -135,7 +171,7 @@ const totalSeats = originalData.reduce((sum, row) => {
     html+='<th>Name of the Municipality/Corporation</th>';
     html+='<th>No. of Wards</th>';
 
-    html+=`<th>${party} (Seats)</th>`;
+    html+=`<th class="highlight-col">${party} (Seats)</th>`;
 
     remaining.forEach(p=>html+=`<th>${p}</th>`);
 
@@ -143,12 +179,12 @@ const totalSeats = originalData.reduce((sum, row) => {
 
 // Total row (just after header)
 html+=`
-<tr style="background:#f9f9f9; font-weight:bold;">
+<tr class="total-row">
 <td colspan="2" style="text-align:left; padding-left:10px;">
 ${party} : Total Seats Won
 </td>
 <td colspan="${remaining.length + 3}" style="text-align:left;">
-${totalSeats}
+${totalSeats} (${percentage}% Share)
 </td>
 </tr>
 `;
@@ -159,7 +195,7 @@ ${totalSeats}
         html+=`<td>${row['Name of the District']||''}</td>`;
         html+=`<td>${row['Name of the Municipality/Corporation']||''}</td>`;
         html+=`<td>${row['No. of Wards']||0}</td>`;
-        html+=`<td>${row[party]||0}</td>`;
+        html+=`<td class="highlight-col">${row[party]||0}</td>`;
         remaining.forEach(p=>html+=`<td>${row[p]||0}</td>`);
         html+='</tr>';
     });
@@ -175,4 +211,5 @@ ${totalSeats}
 </body>
 
 </html>
+
 
