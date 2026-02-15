@@ -29,6 +29,19 @@ thead th {
   font-weight: bold;
   z-index: 1;
 }
+/* Sticky first column (S.No.) */
+table th:first-child,
+table td:first-child {
+  position: sticky;
+  left: 0;
+  background: white;
+  z-index: 3;
+}
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  position: relative;
+}
 
 /* Highlight selected party column */
 .highlight-col {
@@ -211,5 +224,6 @@ ${totalSeats} (${percentage}% Share)
 </body>
 
 </html>
+
 
 
